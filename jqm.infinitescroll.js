@@ -21,7 +21,7 @@
 (function($) {
     var defaults = {
         'windowLocationTrigger': 0.75, //percentage of how far downt he page the user needs to be before the next list is loaded
-        'pathToNextPage' : undefined
+        'pathToNextPage': undefined
     };
 
     var methods = {
@@ -63,32 +63,25 @@
                         $(data).find(opts.itemsToLoad).each(function() {
                             opts.instance.append(this);
                         });
-                        
+
                         var newNavElement = $(data).find(opts.navElement);
-                        if(newNavElement !== undefined){
+                        if (newNavElement !== undefined) {
                             $(opts.navElement).attr('href', newNavElement.attr('href'));
+                            opts.instance.infinitescroll(opts, callback);
                         } else {
                             $(opts.navElement).remove();
                         }
 
-                        opts.pathToNextPage = methods.setPathToNextPage(opts.navElement, $(data))
-
                         if (typeof callback === 'function') { // make sure the callback is a function
                             callback.call(this); // brings the scope to the callback
-                        }
-
-                        if (opts.pathToNextPage !== undefined) {
-                            opts.instance.infinitescroll(opts, callback);
                         }
                     });
                 }
             });
         }
     };
-
-
 })(jQuery);
 
-$(document).live('pagebeforehide', function(){
+$(document).live('pagebeforehide', function() {
     $(window).unbind('scrollstop.infinitescroll');
 });
