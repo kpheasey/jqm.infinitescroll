@@ -20,11 +20,9 @@
 
 (function($) {
     var defaults = {
-        'navElement': '',
-        'itemsToLoad': '',
         'windowLocationTrigger': 0.75, //percentage of how far downt he page the user needs to be before the next list is loaded
         'instance': this
-    }
+    };
 
     var methods = {
         setPathToNextPage: function(navElement, instance) {
@@ -46,7 +44,7 @@
                 return false;
             }
         }
-    }
+    };
 
     $.fn.infinitescroll = function(options, callback) {
         var opts = $.extend(defaults, options);
@@ -80,9 +78,9 @@
                     });
                 }
             });
-            
+
             // stop tracking the scoll stop if page is hidden, will start again when page is shown.
-            $(document).live('pagebeforehide', function(){
+            $(document).live('pagebeforehide', function() {
                 $(window).unbind('scrollstop.infinitescroll');
             });
         }
