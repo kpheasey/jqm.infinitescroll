@@ -20,7 +20,7 @@
 
 (function($) {
     var defaults = {
-        'navElement': '#nextPage',
+        'navElement': '',
         'itemsToLoad': '',
         'windowLocationTrigger': 0.75, //percentage of how far downt he page the user needs to be before the next list is loaded
         'instance': this
