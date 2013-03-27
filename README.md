@@ -8,8 +8,10 @@ This is a very basic infinite scroll plugin for jQuery Mobile.  Just provide the
 $(TARGET).infinitescroll(options, callback);
 
 Required Options:
-  navElement - The link to the next page (i.e. '#nextPage')
-  itemsToLoad - The type of item to pull from next page (i.e. '#target li')
+
+	navElement - The link to the next page (i.e. '#nextPage')
+	itemsToLoad - The type of item to pull from next page (i.e. '#target li')
   
 Optional Options:
-  windowLocationTrigger - how far the user has to scroll down the page before the new items are loaded.  In the form of a percentage (0-1).  Default 0.75.
+
+	windowLocationTrigger - how far the user has to scroll down the page before the new items are loaded.  In the form of a percentage (0-1).  Default 0.75.
