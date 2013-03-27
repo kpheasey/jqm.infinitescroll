@@ -21,7 +21,7 @@
 (function($) {
     var defaults = {
         'windowLocationTrigger': 0.75, //percentage of how far downt he page the user needs to be before the next list is loaded
-        'instance': this
+        'pathToNextPage' : undefined
     };
 
     var methods = {
@@ -30,7 +30,6 @@
 
             if ($(navElement, instance).length > 0) { // nav element may not exist
                 pathToNextPage = $(navElement, instance).attr('href');
-                $(navElement, instance).remove();
             } else {
                 pathToNextPage = undefined;
             }
@@ -38,7 +37,7 @@
             return pathToNextPage;
         },
         isScrolledToBottom: function(limit) {
-            if ($(window).scrollTop() > 1 && (($(window).scrollTop() + $(window).height()) / $(document).height()) > limit) {
+            if ($(window, $.mobile.activePage).scrollTop() > 1 && (($(window, $.mobile.activePage).scrollTop() + $(window, $.mobile.activePage).height()) / $(document).height()) > limit) {
                 return true;
             } else {
                 return false;
@@ -47,17 +46,16 @@
     };
 
     $.fn.infinitescroll = function(options, callback) {
+        defaults['instance'] = $(this);
+        defaults['path']
         var opts = $.extend(defaults, options);
-        opts['instance'] = this;
 
-        if (opts.pathToNextPage === undefined) {
-            opts['pathToNextPage'] = methods.setPathToNextPage(opts.navElement, $.mobile.activePage);
-        }
+        opts.pathToNextPage = methods.setPathToNextPage(opts.navElement, $.mobile.activePage);
 
         if (opts.pathToNextPage !== undefined) { // only do something if there is a known path to next page
             $(opts.navElement, $.mobile.activePage).hide(); // hide the navigation element
 
-            $(window).bind('scrollstop.infinitescroll', function() {
+            $(window, $.mobile.activePage).bind('scrollstop.infinitescroll', function() {
                 if (methods.isScrolledToBottom(opts.windowLocationTrigger)) {
                     $(window).unbind('scrollstop.infinitescroll');// stop checking the scrolling
 
@@ -65,6 +63,13 @@
                         $(data).find(opts.itemsToLoad).each(function() {
                             opts.instance.append(this);
                         });
+                        
+                        var newNavElement = $(data).find(opts.navElement);
+                        if(newNavElement !== undefined){
+                            $(opts.navElement).attr('href', newNavElement.attr('href'));
+                        } else {
+                            $(opts.navElement).remove();
+                        }
 
                         opts.pathToNextPage = methods.setPathToNextPage(opts.navElement, $(data))
 
@@ -78,13 +83,12 @@
                     });
                 }
             });
-
-            // stop tracking the scoll stop if page is hidden, will start again when page is shown.
-            $(document).live('pagebeforehide', function() {
-                $(window).unbind('scrollstop.infinitescroll');
-            });
         }
     };
 
 
 })(jQuery);
+
+$(document).live('pagebeforehide', function(){
+    $(window).unbind('scrollstop.infinitescroll');
+});
