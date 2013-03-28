@@ -37,7 +37,7 @@
             return pathToNextPage;
         },
         isScrolledToBottom: function(limit) {
-            if ($(window, $.mobile.activePage).scrollTop() > 1 && (($(window, $.mobile.activePage).scrollTop() + $(window, $.mobile.activePage).height()) / $(document).height()) > limit) {
+            if ($(window).scrollTop() > 1 && (($(window).scrollTop() + $(window).height()) / $(document).height()) > limit) {
                 return true;
             } else {
                 return false;
@@ -46,18 +46,18 @@
     };
 
     $.fn.infinitescroll = function(options, callback) {
-        defaults['instance'] = $(this);
-        defaults['path']
         var opts = $.extend(defaults, options);
-
+        opts['instance'] = $(this);
+        
         opts.pathToNextPage = methods.setPathToNextPage(opts.navElement, $.mobile.activePage);
 
         if (opts.pathToNextPage !== undefined) { // only do something if there is a known path to next page
             $(opts.navElement, $.mobile.activePage).hide(); // hide the navigation element
 
-            $(window, $.mobile.activePage).bind('scrollstop.infinitescroll', function() {
+            $(window).on('scrollstop.infinitescroll', function() {
+                
                 if (methods.isScrolledToBottom(opts.windowLocationTrigger)) {
-                    $(window).unbind('scrollstop.infinitescroll');// stop checking the scrolling
+                    $(window).off('scrollstop.infinitescroll');// stop checking the scrolling
 
                     $.ajax(opts.pathToNextPage).done(function(data) {
                         $(data).find(opts.itemsToLoad).each(function() {
@@ -65,7 +65,7 @@
                         });
 
                         var newNavElement = $(data).find(opts.navElement);
-                        if (newNavElement !== undefined) {
+                        if (newNavElement.length > 0) {
                             $(opts.navElement).attr('href', newNavElement.attr('href'));
                             opts.instance.infinitescroll(opts, callback);
                         } else {
@@ -83,5 +83,5 @@
 })(jQuery);
 
 $(document).live('pagebeforehide', function() {
-    $(window).unbind('scrollstop.infinitescroll');
+    $(window).off('scrollstop.infinitescroll');
 });
