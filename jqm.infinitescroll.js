@@ -48,6 +48,7 @@
     $.fn.infinitescroll = function(options, callback) {
         var opts = $.extend(defaults, options);
         opts['instance'] = $(this);
+        opts['newItems'] = undefined;
         
         opts.pathToNextPage = methods.setPathToNextPage(opts.navElement, $.mobile.activePage);
 
@@ -58,11 +59,16 @@
                 
                 if (methods.isScrolledToBottom(opts.windowLocationTrigger)) {
                     $(window).off('scrollstop.infinitescroll');// stop checking the scrolling
-
                     $.ajax(opts.pathToNextPage).done(function(data) {
-                        $(data).find(opts.itemsToLoad).each(function() {
+                        opts.newItems = $(data).find(opts.itemsToLoad);
+                        
+                        opts.newItems.each(function() {
                             opts.instance.append(this);
                         });
+                        
+                        if (typeof callback === 'function') { // make sure the callback is a function
+                            callback.call(this, opts.newItems); // brings the scope to the callback
+                        }
 
                         var newNavElement = $(data).find(opts.navElement);
                         if (newNavElement.length > 0) {
@@ -70,10 +76,6 @@
                             opts.instance.infinitescroll(opts, callback);
                         } else {
                             $(opts.navElement).remove();
-                        }
-
-                        if (typeof callback === 'function') { // make sure the callback is a function
-                            callback.call(this); // brings the scope to the callback
                         }
                     });
                 }
