@@ -37,7 +37,7 @@
             return pathToNextPage;
         },
         isScrolledToBottom: function(limit) {
-            if ($(window).scrollTop() > 1 && (($(window).scrollTop() + $(window).height()) / $(document).height()) > limit) {
+            if ($(window).scrollTop() == 0 || ($(window).scrollTop() > 1 && (($(window).scrollTop() + $(window).height()) / $(document).height()) > limit)) {
                 return true;
             } else {
                 return false;
@@ -49,41 +49,45 @@
         var opts = $.extend(defaults, options);
         opts['instance'] = $(this);
         opts['newItems'] = undefined;
-        
-        opts.pathToNextPage = methods.setPathToNextPage(opts.navElement, $.mobile.activePage);
 
-        if (opts.pathToNextPage !== undefined) { // only do something if there is a known path to next page
-            $(opts.navElement, $.mobile.activePage).hide(); // hide the navigation element
+        $(opts.navElement, $.mobile.activePage).hide(); // hide the navigation element
 
-            $(window).on('scrollstop.infinitescroll', function() {
-                
-                if (methods.isScrolledToBottom(opts.windowLocationTrigger)) {
-                    $(window).off('scrollstop.infinitescroll');// stop checking the scrolling
-                    $.ajax(opts.pathToNextPage).done(function(data) {
-                        opts.newItems = $(data).find(opts.itemsToLoad);
-                        
-                        opts.newItems.each(function() {
-                            opts.instance.append(this);
-                        });
-                        
-                        if (typeof callback === 'function') { // make sure the callback is a function
-                            callback.call(this, opts.newItems); // brings the scope to the callback
-                        }
+        $(window).on('scrollstop.infinitescroll', function() {
 
-                        var newNavElement = $(data).find(opts.navElement);
-                        if (newNavElement.length > 0) {
-                            $(opts.navElement).attr('href', newNavElement.attr('href'));
-                            opts.instance.infinitescroll(opts, callback);
-                        } else {
-                            $(opts.navElement).remove();
-                        }
-                    });
+            if (methods.isScrolledToBottom(opts.windowLocationTrigger)) {
+                $(window).off('scrollstop.infinitescroll');// stop checking the scrolling
+                opts.pathToNextPage = methods.setPathToNextPage(opts.navElement, $.mobile.activePage);
+
+                if (opts.pathToNextPage == undefined) {
+                    return false;
                 }
-            });
-        }
+
+                $.ajax(opts.pathToNextPage).done(function(data) {
+                    opts.newItems = $(data).find(opts.itemsToLoad);
+
+                    opts.newItems.each(function() {
+                        opts.instance.append(this);
+                    });
+
+                    if (typeof callback === 'function') { // make sure the callback is a function
+                        callback.call(this, opts.newItems); // brings the scope to the callback
+                    }
+
+                    var newNavElement = $(data).find(opts.navElement);
+                    if (newNavElement.length > 0) {
+                        $(opts.navElement).attr('href', newNavElement.attr('href'));
+                        opts.instance.infinitescroll(opts, callback);
+                    } else {
+                        $(opts.navElement).removeAttr('id');
+                    }
+                });
+            }
+        });
+        
+        $(window).trigger('scrollstop.infinitescroll');
     };
 })(jQuery);
 
 $(document).live('pagebeforehide', function() {
-    $(window).off('scrollstop.infinitescroll');
+    $(window).off('scrollstop.infinitescroll resize.infinitescroll');
 });
