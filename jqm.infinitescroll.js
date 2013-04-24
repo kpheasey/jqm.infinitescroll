@@ -83,8 +83,10 @@
                 });
             }
         });
-        
-        $(window).trigger('scrollstop.infinitescroll');
+
+        if ($(window).height() > $('[data-role="content"]', $.mobile.activePage).height()) {
+            $(window).trigger('scrollstop.infinitescroll');
+        }
     };
 })(jQuery);
 
