@@ -90,6 +90,6 @@
     };
 })(jQuery);
 
-$(document).live('pagebeforehide', function() {
+$(document).on('pagebeforehide', function() {
     $(window).off('scrollstop.infinitescroll resize.infinitescroll');
 });
