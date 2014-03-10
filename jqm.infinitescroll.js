@@ -21,7 +21,8 @@
 (function($) {
     var defaults = {
         'windowLocationTrigger': 0.75, //percentage of how far downt he page the user needs to be before the next list is loaded
-        'pathToNextPage': undefined
+        'pathToNextPage': undefined,
+        'showLoadingUi': false
     };
 
     var methods = {
@@ -62,7 +63,11 @@
                     return false;
                 }
 
+                if (opts.showLoadingUi){
+                  $.mobile.loading('show');
+                }
                 $.ajax(opts.pathToNextPage).done(function(data) {
+                    $.mobile.loading('hide');
                     opts.newItems = $(data).find(opts.itemsToLoad);
 
                     opts.newItems.each(function() {
