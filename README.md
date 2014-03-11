@@ -24,6 +24,12 @@ This is a very basic infinite scroll plugin for jQuery Mobile.  Just provide the
 		}});
 	</script>
 
+Installation:
+
+```bash
+bower install jqm.infinitescroll
+```
+
 Required Options:
 
 	navElement - The link to the next page (i.e. '#nextPage')
