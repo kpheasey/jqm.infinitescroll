@@ -1,0 +1,27 @@
+{
+  "name": "jqm.infinitescroll",
+  "main": "jqm.infinitescroll.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/tagged/jqm.infinitescroll",
+  "authors": [
+    "Kevin Pheasey",
+    "Alex Hancock"
+  ],
+  "description": "An infinite scroll plugin geared for usage with jQuery Mobile",
+  "keywords": [
+    "jquery",
+    "mobile",
+    "jqm",
+    "mobile",
+    "infinite",
+    "scroll"
+  ],
+  "license": "GPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
